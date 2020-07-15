@@ -2,7 +2,8 @@
 
 __all__ = ['test_eq', 'listify', 'test_in', 'test_err', 'configure_logging', 'setup_dataframe_copy_logging',
            'n_total_series', 'n_days_total', 'raw_dir', 'read_series_sample', 'melt_sales_series', 'extract_day_ids',
-           'join_w_calendar', 'join_w_prices', 'to_parquet', 'extract_id_columns', 'get_submission_template_melt']
+           'join_w_calendar', 'join_w_prices', 'save_encoder', 'to_parquet', 'extract_id_columns',
+           'get_submission_template_melt']
 
 # Cell
 from nbdev.showdoc import *
@@ -189,6 +190,10 @@ def join_w_prices(partition, raw_dir):
     return partition
 
 # Cell
+def save_encoder(enc, path):
+    np.save(path, enc.classes_)
+
+# Cell
 def to_parquet(sales_series, file_name, processed_dir, LOG):
     LOG.debug('Setting index')
     sales_series = sales_series.set_index(sales_series['id'])
@@ -221,7 +226,7 @@ def to_parquet(sales_series, file_name, processed_dir, LOG):
 
     for name, enc in encoders.items():
         LOG.debug(f"Saving encoder: {name}")
-        np.save(f'{processed_dir}/{name}.npy', enc.classes_)
+        save_encoder(enc, f'{processed_dir}/{name}.npy')
 
     # TODO: uint -> int, category/object -> int, day_date -> drop
     # TODO: this is being called both on dask and pandas data frames and args are rather not compatible :/
@@ -253,7 +258,7 @@ from datetime import timedelta
 def get_submission_template_melt(raw, d_1_date=pd.to_datetime('2016-06-20')):
     df_sample_submission = pd.read_csv(f'{raw}/sample_submission.csv')
 
-    mapping = {f'F{day}':(d_1_date + timedelta(days=day)).date() for day in range(1,29)}
+    mapping = {f'F{day}':(d_1_date + timedelta(days=day-1)).date() for day in range(1,29)}
     mapping['id'] = 'id'
     df_sample_submission.columns = df_sample_submission.columns.map(mapping)
     df_sample_submission_melt = df_sample_submission.melt(id_vars='id', var_name='day', value_name='sales')
