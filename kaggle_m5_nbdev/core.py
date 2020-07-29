@@ -15,6 +15,7 @@ import dask.dataframe as dd
 import numpy as np
 import traceback
 from dask_ml import preprocessing as dask_preprocessing
+import dask.array as da, dask.dataframe as dd
 
 # Cell
 def test_eq(a,b): assert a==b, f'{a}, {b}'
@@ -191,7 +192,10 @@ def join_w_prices(partition, raw_dir):
 
 # Cell
 def save_encoder(enc, path):
-    np.save(path, enc.classes_)
+    classes_ = enc.classes_
+    if da.core.Array == type(enc.classes_):
+        classes_ = classes_.compute()
+    np.save(path, classes_)
 
 # Cell
 def to_parquet(sales_series, file_name, processed_dir, LOG):

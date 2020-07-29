@@ -4,8 +4,8 @@ __all__ = ['prepare_data_on_disk']
 
 # Cell
 
-from core import read_series_sample, melt_sales_series, extract_day_ids, join_w_calendar, join_w_prices
-from core import to_parquet, get_submission_template_melt
+from .core import read_series_sample, melt_sales_series, extract_day_ids, join_w_calendar, join_w_prices
+from .core import to_parquet, get_submission_template_melt
 import os
 
 def prepare_data_on_disk(log, n_sample_series, processed_dir, raw_dir, force_data_prep):
