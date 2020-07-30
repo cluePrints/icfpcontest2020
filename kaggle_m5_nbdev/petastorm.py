@@ -3,6 +3,44 @@
 __all__ = ['ParquetIterableDataset']
 
 # Cell
+from petastorm import make_batch_reader, TransformSpec
+from petastorm.pytorch import DataLoader as PetaDataLoader
+from torch.utils.data import TensorDataset, DataLoader as TorchDataLoader, IterableDataset
+from torch import tensor
+from pyarrow.parquet import ParquetFile, ParquetReader
+import os
+import re
+import torch
+import math
+import pandas as pd
+import numpy as np
+
+def _init_filenames(log, filename_param, rex=None):
+    # note to self: I think that comes from petastorm/parquet but I don't really remember now :/
+    FILE_PREFIX = 'file:'
+
+    if rex is None:
+        return filename_param
+
+    filename = filename_param[len(FILE_PREFIX):]
+    if not os.path.isdir(filename):
+        raise ValueError(f"Filteri ng only possible for dirs, {filename} is not a one")
+
+    paths = [os.path.join(dp, f) for dp, dn, fn in os.walk(filename) for f in fn]
+    res = list(map(
+        lambda f: FILE_PREFIX + f,
+        filter(lambda f: re.match(rex, f) is not None, paths)
+    ))
+    if (len(res) == 0):
+        raise ValueError(f"0 files remained out ot {len(paths)} - seems regex is too restrictive")
+
+    if (len(res) == len(paths)):
+        raise ValueError(f"{len(paths)} files remained out ot {len(paths)} - seems regex is a no op")
+
+    log.debug(f"{filename_param} -> {len(res)} files out of {len(paths)} remained after applying filter ({rex})")
+    return res;
+
+# Cell
 class ParquetIterableDataset(IterableDataset):
     def __init__(self, filename, log, rex=None):
         super().__init__()
