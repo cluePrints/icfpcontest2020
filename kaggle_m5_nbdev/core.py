@@ -46,7 +46,7 @@ def test_err(f, expected_message_part = None):
     raise ValueError("Expected error to be thrown")
 
 # Cell
-def configure_logging(log_dir, log_name, log_lvl='DEBUG', con_log_lvl='INFO'):
+def configure_logging(log_dir, log_name, log_lvl='DEBUG', con_log_lvl='INFO', date_format='%Y-%m-%d %H:%M:%S'):
     class IndentAdapter(logging.LoggerAdapter):
         def __init__(self, indent_start, indent_char, logger, extra):
             super().__init__(logger, extra)
@@ -68,7 +68,6 @@ def configure_logging(log_dir, log_name, log_lvl='DEBUG', con_log_lvl='INFO'):
 
     numeric_level = getattr(logging, log_lvl, None)
     log_format = '%(levelname)5s [%(asctime)s] %(name)s: %(message)s'
-    date_format = '%Y-%m-%d %H:%M:%S'
     logging.basicConfig(
         filename=f'{log_dir}/{log_name}_{datetime.datetime.now().strftime("%Y-%m-%d_%H_%M_%S")}.txt',
         level=numeric_level,

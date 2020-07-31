@@ -25,7 +25,7 @@ index = {"test_eq": "00_core.ipynb",
 
 modules = ["core.py",
            "petastorm.py",
-           "pipeline.py"]
+           "pipeline/core.py"]
 
 doc_url = "https://cluePrints.github.io/kaggle_m5_nbdev/"
 
