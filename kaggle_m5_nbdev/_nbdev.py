@@ -21,7 +21,14 @@ index = {"test_eq": "00_core.ipynb",
          "extract_id_columns": "00_core.ipynb",
          "get_submission_template_melt": "00_core.ipynb",
          "ParquetIterableDataset": "01_petastorm.ipynb",
-         "prepare_data_on_disk": "02_pipeline.ipynb"}
+         "prepare_data_on_disk": "02_pipeline.ipynb",
+         "load_encoders": "02_pipeline.ipynb",
+         "encode": "02_pipeline.ipynb",
+         "prepare_test_data_on_disk": "02_pipeline.ipynb",
+         "setup_data_loaders": "02_pipeline.ipynb",
+         "Net": "02_pipeline.ipynb",
+         "MyLoss": "02_pipeline.ipynb",
+         "do_train": "02_pipeline.ipynb"}
 
 modules = ["core.py",
            "petastorm.py",
